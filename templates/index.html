@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Portfolio Bot</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="app">
+      <!-- ==========================================
+         SIDEBAR
+    =========================================== -->
+      <aside class="sidebar" id="sidebar">
+        <!-- Portfolio Header -->
+        <div class="sidebar-header">
+          <div class="portfolio-info">
+            <span class="eyebrow">PORTFOLIO</span>
+            <h2>Shaurya Prakash Verma</h2>
+          </div>
+
+          <button
+            class="new-chat-btn"
+            id="newChatBtn"
+            title="New conversation"
+            aria-label="New conversation"
+          >
+            +
+          </button>
+        </div>
+
+        <!-- Recent Conversations -->
+        <div class="recent-section">
+          <div class="section-label">RECENT</div>
+
+          <div class="conversation-list">
+            <!-- Active conversation -->
+            <button class="conversation active">
+              <div class="conversation-content">
+                <span class="conversation-title"> New conversation </span>
+
+                <span class="conversation-preview">
+                  What are your core technical...
+                </span>
+              </div>
+
+              <span class="conversation-time"> NOW </span>
+            </button>
+
+            <button class="conversation">
+              <div class="conversation-content">
+                <span class="conversation-title">
+                  What are your core technical...
+                </span>
+
+                <span class="conversation-preview">
+                  What are your core technical skills?
+                </span>
+              </div>
+
+              <span class="conversation-time"> NOW </span>
+            </button>
+
+            <button class="conversation">
+              <div class="conversation-content">
+                <span class="conversation-title">
+                  Walk me through a challenging...
+                </span>
+
+                <span class="conversation-preview">
+                  Walk me through a challenging project.
+                </span>
+              </div>
+
+              <span class="conversation-time"> NOW </span>
+            </button>
+
+            <button class="conversation">
+              <div class="conversation-content">
+                <span class="conversation-title"> Technical background </span>
+
+                <span class="conversation-preview">
+                  List down the projects
+                </span>
+              </div>
+
+              <span class="conversation-time"> TODAY </span>
+            </button>
+
+            <button class="conversation">
+              <div class="conversation-content">
+                <span class="conversation-title"> Open source & projects </span>
+
+                <span class="conversation-preview">
+                  Tell me about your side projects
+                </span>
+              </div>
+
+              <span class="conversation-time"> YESTERDAY </span>
+            </button>
+
+            <button class="conversation">
+              <div class="conversation-content">
+                <span class="conversation-title"> Team & collaboration </span>
+
+                <span class="conversation-preview">
+                  How do you work in a team?
+                </span>
+              </div>
+
+              <span class="conversation-time"> AUG 8 </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+          <span class="version"> RAG · v1.0 </span>
+
+          <span class="footer-description"> Ask me anything. </span>
+        </div>
+      </aside>
+
+      <!-- ==========================================
+         MAIN CONTENT
+    =========================================== -->
+      <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="topbar">
+          <button
+            class="menu-btn"
+            id="menuBtn"
+            aria-label="Toggle sidebar"
+            title="Toggle sidebar"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+          <div class="chat-title">New conversation</div>
+
+          <div class="topbar-brand">PORTFOLIO · RAG</div>
+        </header>
+
+        <!-- ======================================
+             CHAT / HERO AREA
+        ======================================= -->
+        <section class="chat-area">
+          <!-- Decorative background -->
+          <div class="background-grid"></div>
+
+          <!-- Hero -->
+          <div class="hero">
+            <span class="hero-eyebrow"> HELLO, RECRUITER </span>
+
+            <h1>
+              I'm Shaurya's
+              <span>portfolio bot.</span>
+            </h1>
+
+            <div class="hero-line"></div>
+
+            <p class="hero-description">
+              Ask me anything about Shaurya's experience, skills, projects, or what
+              they're looking for next.
+            </p>
+
+            <!-- Suggested Questions -->
+            <div class="suggestions">
+              <button
+                class="suggestion-card"
+                data-question="What are your core technical skills?"
+              >
+                <span class="arrow">→</span>
+
+                <span> What are your core technical skills? </span>
+              </button>
+
+              <button
+                class="suggestion-card"
+                data-question="Walk me through a challenging project."
+              >
+                <span class="arrow">→</span>
+
+                <span> Walk me through a challenging project. </span>
+              </button>
+
+              <button
+                class="suggestion-card"
+                data-question="How do you approach system design?"
+              >
+                <span class="arrow">→</span>
+
+                <span> How do you approach system design? </span>
+              </button>
+
+              <button
+                class="suggestion-card"
+                data-question="What kind of roles are you looking for?"
+              >
+                <span class="arrow">→</span>
+
+                <span> What kind of roles are you looking for? </span>
+              </button>
+
+              <button
+                class="suggestion-card"
+                data-question="Tell me about your experience with AI/ML."
+              >
+                <span class="arrow">→</span>
+
+                <span> Tell me about your experience with AI/ML. </span>
+              </button>
+
+              <button
+                class="suggestion-card"
+                data-question="How do you handle deadlines and pressure?"
+              >
+                <span class="arrow">→</span>
+
+                <span> How do you handle deadlines and pressure? </span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ==================================
+                 CHAT MESSAGES
+            =================================== -->
+          <div class="messages" id="messages">
+            <!-- Messages will be inserted by JavaScript -->
+          </div>
+        </section>
+
+        <!-- ======================================
+             INPUT AREA
+        ======================================= -->
+        <footer class="input-area">
+          <div class="input-wrapper">
+            <textarea
+              id="chatInput"
+              class="chat-input"
+              placeholder="Ask about Alex's experience, skills, or projects..."
+              rows="1"
+              aria-label="Chat message"
+            ></textarea>
+
+            <button
+              id="sendBtn"
+              class="send-btn"
+              title="Send message"
+              aria-label="Send message"
+            >
+              ↑
+            </button>
+          </div>
+
+          <div class="input-hint">
+            Enter ↵ to send&nbsp;&nbsp;·&nbsp;&nbsp; Shift+Enter for new line
+          </div>
+        </footer>
+      </main>
+
+      <!-- Help Button -->
+      <button class="help-btn" id="helpBtn" aria-label="Help" title="Help">
+        ?
+      </button>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

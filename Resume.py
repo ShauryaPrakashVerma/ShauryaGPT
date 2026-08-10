@@ -16,16 +16,48 @@ if not my_api_key:
 client = Groq(api_key=my_api_key)
 model = "llama-3.3-70b-versatile"
 
+file_path = "C:\\Users\\Shaur\\Desktop\\ShauryaGPT\\Personal_Information\\MY PROJECTS.docx"
 
+def read_docx(file_path):
+    document = Document(file_path)
+    text = ""
+    for paragraph in document.paragraphs:
+        if paragraph.text.strip():
+            text += paragraph.text + "\n"
+    
+    for table in document.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                if cell.text.strip():
+                    text += cell.text + "\n"
+    return text
 
-system_prompt = '''
+description = read_docx(file_path)
+
+system_prompt = f'''
+# ROLE:
+You are an expert virtual assistant for Shaurya.
+
+# TASK:
+Your task is to answer all the questions asked related to the projects and details about the person.
+
+# Constraints:
+You need to answer about details mentioned in the given description only.
+{description }
+
+# Output Format:
+The output need to strictly as per the specified format 
+
+# Fallback
+If the question isnt related to the details mentioned in the description, the answer should be that i can't answer this question.
 
 '''
 
 
-user_prompt = '''
-Can you list the exact repositories of this github profile: https://github.com/ShauryaPrakashVerma
-'''
+question = input("Enter your question: ")
+
+
+user_prompt = question
 
 
 messages = [
