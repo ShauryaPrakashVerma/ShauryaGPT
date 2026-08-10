@@ -374,7 +374,7 @@ body {
 
 /* Menu animation */
 
-.app.sidebar-collapsed .menu-btn span:nth-child(1) {
+/* .app.sidebar-collapsed .menu-btn span:nth-child(1) {
   transform: translateY(6px) rotate(45deg);
 }
 
@@ -384,7 +384,29 @@ body {
 
 .app.sidebar-collapsed .menu-btn span:nth-child(3) {
   transform: translateY(-6px) rotate(-45deg);
+} */
+
+/* Sidebar OPEN → X */
+
+.app:not(.sidebar-collapsed) .menu-btn span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
 }
+
+.app:not(.sidebar-collapsed) .menu-btn span:nth-child(2) {
+    opacity: 0;
+}
+
+.app:not(.sidebar-collapsed) .menu-btn span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Sidebar COLLAPSED → hamburger */
+
+.app.sidebar-collapsed .menu-btn span {
+    transform: none;
+    opacity: 1;
+}
+
 
 /* =========================================================
    CHAT TITLE
