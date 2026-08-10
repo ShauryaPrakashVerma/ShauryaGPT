@@ -1,0 +1,13 @@
+[project]
+name = "shauryagpt"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "docx>=0.2.4",
+    "dotenv>=0.9.9",
+    "groq>=1.6.0",
+    "pydantic>=2.13.4",
+    "pypdf>=6.15.0",
+]
