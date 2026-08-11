@@ -119,44 +119,49 @@ suggestions.forEach((suggestion) => {
    SEND MESSAGE
 ========================================================= */
 
-function sendMessage() {
-  const message = chatInput.value.trim();
+async function sendMessage() {
 
-  // Don't send empty messages
-  if (!message) {
-    return;
-  }
+    const message = chatInput.value.trim();
 
-  /* -----------------------------------------
-       USER MESSAGE
-    ----------------------------------------- */
+    if (!message) {
+        return;
+    }
 
-  addMessage(message, "user");
+    // Display user's message
+    addMessage(message, "user");
 
-  /* -----------------------------------------
-       CLEAR INPUT
-    ----------------------------------------- */
+    // Clear input
+    chatInput.value = "";
+    chatInput.style.height = "auto";
 
-  chatInput.value = "";
+    try {
 
-  chatInput.style.height = "auto";
+        const response = await fetch("/chat", {
+            method: "POST",
 
-  /* -----------------------------------------
-       UPDATE CONVERSATION TITLE
-    ----------------------------------------- */
+            headers: {
+                "Content-Type": "application/json"
+            },
 
-  updateConversation(message);
+            body: JSON.stringify({
+                message: message
+            })
+        });
 
-  /* -----------------------------------------
-       DEMO BOT RESPONSE
-       
-       Replace this later with your Groq API
-       / backend request.
-    ----------------------------------------- */
+        const data = await response.json();
 
-  setTimeout(() => {
-    addMessage(generateDemoResponse(message), "bot");
-  }, 700);
+        // Display Flask/LLM response
+        addMessage(data.response, "bot");
+
+    } catch (error) {
+
+        console.error("Error:", error);
+
+        addMessage(
+            "Sorry, something went wrong.",
+            "bot"
+        );
+    }
 }
 
 /* =========================================================
