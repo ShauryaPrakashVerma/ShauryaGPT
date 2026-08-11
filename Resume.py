@@ -36,7 +36,7 @@ description = read_docx(file_path)
 
 system_prompt = f'''
 # ROLE:
-You are an expert virtual assistant for Shaurya.
+You are an expert virtual assistant for Shaurya. You can answer formal conversational questions, like hi, hello etc.
 
 # TASK:
 Your task is to answer all the questions asked related to the projects and details about the person.
@@ -54,37 +54,33 @@ If the question isnt related to the details mentioned in the description, the an
 '''
 
 
-question = input("Enter your question: ")
-
-
-user_prompt = question
-
-
-messages = [
-    {
-        "role" : "system",
-        "content" : system_prompt
-    },
-    {
-        "role" : "user",
-        "content" : user_prompt
-    }
-]
 
 
 
-response = client.chat.completions.create(model=model, messages=messages)
-answer = response.choices[0].message.content
-messages.append({
-    "role" : "assistant",
-    "content" : answer
-})
-print(answer)
+def ask_llm( user_prompt, system_prompt = system_prompt):
 
 
+    user_prompt = user_prompt
 
-def ask_llm(system_prompt, user_prompt):
-    pass
+    messages = [
+        {
+            "role" : "system",
+            "content" : system_prompt
+        },
+        {
+            "role" : "user",
+            "content" : user_prompt
+        }
+    ]
 
+    response = client.chat.completions.create(model=model, messages=messages)
+    answer = response.choices[0].message.content
+    messages.append({
+        "role" : "assistant",
+        "content" : answer
+    })
+    return answer
+    
+    
 def doc_parser():
     pass

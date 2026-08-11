@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-
+from Resume import ask_llm
 
 app = Flask(__name__)
 
@@ -13,9 +13,10 @@ def home():
 def chat():
     data = request.get_json()
     user_message = data.get("message")
-    print("User:", user_message)
+    answer = ask_llm(user_prompt=user_message)
+    print(answer)
     return jsonify({
-        "response": user_message
+        "response": answer
     })
 
 
