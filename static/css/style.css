@@ -389,24 +389,23 @@ body {
 /* Sidebar OPEN → X */
 
 .app:not(.sidebar-collapsed) .menu-btn span:nth-child(1) {
-    transform: translateY(6px) rotate(45deg);
+  transform: translateY(6px) rotate(45deg);
 }
 
 .app:not(.sidebar-collapsed) .menu-btn span:nth-child(2) {
-    opacity: 0;
+  opacity: 0;
 }
 
 .app:not(.sidebar-collapsed) .menu-btn span:nth-child(3) {
-    transform: translateY(-6px) rotate(-45deg);
+  transform: translateY(-6px) rotate(-45deg);
 }
 
 /* Sidebar COLLAPSED → hamburger */
 
 .app.sidebar-collapsed .menu-btn span {
-    transform: none;
-    opacity: 1;
+  transform: none;
+  opacity: 1;
 }
-
 
 /* =========================================================
    CHAT TITLE
@@ -948,4 +947,124 @@ body {
   .chat-title {
     font-size: 13px;
   }
+}
+/* =========================================================
+   MARKDOWN BOT RESPONSE
+========================================================= */
+
+.message.bot {
+  line-height: 1.7;
+}
+
+.message.bot p {
+  margin: 0 0 14px;
+}
+
+.message.bot p:last-child {
+  margin-bottom: 0;
+}
+
+.message.bot h1,
+.message.bot h2,
+.message.bot h3 {
+  margin: 18px 0 10px;
+
+  color: #e5e5e5;
+
+  font-family: "Inter", sans-serif;
+
+  font-weight: 600;
+}
+
+.message.bot h1 {
+  font-size: 20px;
+}
+
+.message.bot h2 {
+  font-size: 17px;
+}
+
+.message.bot h3 {
+  font-size: 14px;
+}
+
+.message.bot strong {
+  color: #eeeeee;
+  font-weight: 600;
+}
+
+.message.bot em {
+  color: #bdbdbd;
+}
+
+.message.bot ul,
+.message.bot ol {
+  margin: 10px 0 14px;
+  padding-left: 22px;
+}
+
+.message.bot li {
+  margin-bottom: 6px;
+}
+
+.message.bot code {
+  padding: 2px 5px;
+
+  background: #181818;
+
+  border: 1px solid #292929;
+
+  font-family: "DM Mono", monospace;
+
+  font-size: 11px;
+
+  color: #ccc;
+}
+
+.message.bot pre {
+  margin: 14px 0;
+
+  padding: 14px;
+
+  overflow-x: auto;
+
+  background: #080808;
+
+  border: 1px solid #292929;
+}
+
+.message.bot pre code {
+  padding: 0;
+
+  background: transparent;
+
+  border: none;
+
+  font-size: 11px;
+
+  line-height: 1.6;
+}
+
+.message.bot blockquote {
+  margin: 12px 0;
+
+  padding-left: 14px;
+
+  border-left: 2px solid #444;
+
+  color: #888;
+}
+
+.message.bot a {
+  color: #aaa;
+
+  text-decoration: underline;
+}
+
+.message.bot hr {
+  margin: 18px 0;
+
+  border: none;
+
+  border-top: 1px solid #292929;
 }

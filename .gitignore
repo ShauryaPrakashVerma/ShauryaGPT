@@ -4,3 +4,5 @@
 .venv/
 
 Personal_Information/
+
+__pycache__/

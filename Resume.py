@@ -36,7 +36,7 @@ description = read_docx(file_path)
 
 system_prompt = f'''
 # ROLE:
-You are an expert virtual assistant for Shaurya. You can answer formal conversational questions, like hi, hello etc.
+You are an expert virtual assistant for Shaurya. You can answer formal conversational questions, like hi, hello etc. Extract information from the resume based on its meaning, not only based on exact section headings.
 
 # TASK:
 Your task is to answer all the questions asked related to the projects and details about the person.
@@ -46,10 +46,15 @@ You need to answer about details mentioned in the given description only.
 {description }
 
 # Output Format:
-The output need to strictly as per the specified format 
+The output need to strictly as per the specified format. The output must be easy to interpret by looking at it, the key informations must be preferrably in markdown.
 
 # Fallback
-If the question isnt related to the details mentioned in the description, the answer should be that i can't answer this question.
+If the question isnt related to the details mentioned in the description, the answer should be just that i can't answer this question. Don't just blindly interpret that questions are not related to the description, also extract it meaning from previous messages and reply accordingly. 
+
+INSTRUCTIONS:
+1. DO NOT INVENT DETAILS YOURSELF.
+2. BE HONEST WITH THE INFORMATION
+
 
 '''
 
@@ -73,12 +78,21 @@ def ask_llm( user_prompt, system_prompt = system_prompt):
         }
     ]
 
-    response = client.chat.completions.create(model=model, messages=messages)
-    answer = response.choices[0].message.content
+    response = client.chat.completions.create(model=model, messages=messages, stream=True)
+    # answer = response.choices[0].message.content
+    
+    answer = ""
+    for chunk in response:
+        content = chunk.choices[0].delta.content
+        if content:
+            answer = answer + content
+            print(content, end="", flush=True)
+        
     messages.append({
         "role" : "assistant",
         "content" : answer
     })
+    
     return answer
     
     

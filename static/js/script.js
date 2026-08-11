@@ -169,19 +169,26 @@ async function sendMessage() {
 ========================================================= */
 
 function addMessage(text, type) {
-  const messageElement = document.createElement("div");
 
-  messageElement.classList.add("message", type);
+    const messageElement = document.createElement("div");
 
-  messageElement.textContent = text;
+    messageElement.classList.add(
+        "message",
+        type
+    );
 
-  messagesContainer.appendChild(messageElement);
+    if (type === "bot") {
+        messageElement.innerHTML = marked.parse(text);
+    } else {
+        messageElement.textContent = text;
+    }
 
-  // Scroll to latest message
-  messagesContainer.scrollIntoView({
-    behavior: "smooth",
-    block: "end",
-  });
+    messagesContainer.appendChild(messageElement);
+
+    messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        behavior: "smooth"
+    });
 }
 
 /* =========================================================
