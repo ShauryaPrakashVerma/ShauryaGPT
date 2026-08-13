@@ -19,6 +19,8 @@ const conversations = document.querySelectorAll(".conversation");
 
 const helpBtn = document.getElementById("helpBtn");
 
+const conversationList = document.getElementById("conversationList");
+
 /* =========================================================
    SIDEBAR TOGGLE
 ========================================================= */
@@ -31,66 +33,96 @@ menuBtn.addEventListener("click", () => {
    NEW CONVERSATION
 ========================================================= */
 
+let conversationCount = 0;
+
 newChatBtn.addEventListener("click", () => {
-  // Remove existing messages
-  messagesContainer.innerHTML = "";
 
-  // Clear input
-  chatInput.value = "";
+    // Create a unique conversation
+    conversationCount++;
 
-  // Reset textarea height
-  chatInput.style.height = "auto";
+    const conversation = document.createElement("button");
 
-  // Update title
-  const chatTitle = document.querySelector(".chat-title");
+    conversation.classList.add(
+        "conversation",
+        "active"
+  );
+  
+    conversation.innerHTML = `
+        <div class="conversation-content">
+            <span class="conversation-title">
+                New conversation
+            </span>
 
-  if (chatTitle) {
-    chatTitle.textContent = "New conversation";
-  }
+            <span class="conversation-preview">
+                Start a new conversation...
+            </span>
+        </div>
 
-  // Remove active state from all conversations
-  conversations.forEach((conversation) => {
-    conversation.classList.remove("active");
-  });
+        <span class="conversation-time">
+            NOW
+        </span>
+    `;
 
-  // Activate first conversation
-  if (conversations.length > 0) {
-    conversations[0].classList.add("active");
-  }
+    // Remove active state from old conversations
+    document
+        .querySelectorAll(".conversation")
+        .forEach(item => {
+            item.classList.remove("active");
+        });
 
-  // Focus input
-  chatInput.focus();
+    // Add new conversation to sidebar
+    conversationList.prepend(conversation);
+
+    // Clear current messages
+    messagesContainer.innerHTML = "";
+
+    // Reset input
+    chatInput.value = "";
+    chatInput.style.height = "auto";
+
+    // Reset top title
+    document.querySelector(".chat-title").textContent =
+        "New conversation";
+
+    // Focus input
+    chatInput.focus();
 });
 
 /* =========================================================
    CONVERSATION SELECTION
 ========================================================= */
 
-conversations.forEach((conversation) => {
-  conversation.addEventListener("click", () => {
-    // Remove active state
-    conversations.forEach((item) => {
-      item.classList.remove("active");
+conversationList.addEventListener("click", (event) => {
+
+    const conversation =
+        event.target.closest(".conversation");
+
+    // Click wasn't on a conversation
+    if (!conversation) {
+        return;
+    }
+
+    // Remove active state from every conversation
+    document.querySelectorAll(".conversation").forEach((item) => {
+        item.classList.remove("active");
     });
 
-    // Activate selected conversation
+    // Make clicked conversation active
     conversation.classList.add("active");
 
     // Get conversation title
-    const titleElement = conversation.querySelector(".conversation-title");
+    const titleElement =
+        conversation.querySelector(".conversation-title");
 
     const title = titleElement
-      ? titleElement.textContent.trim()
-      : "Conversation";
+        ? titleElement.textContent.trim()
+        : "New conversation";
 
-    // Update top title
-    const chatTitle = document.querySelector(".chat-title");
+    // Change top bar title
+    document.querySelector(".chat-title").textContent = title;
 
-    if (chatTitle) {
-      chatTitle.textContent = title;
-    }
-  });
 });
+
 
 /* =========================================================
    SUGGESTION CARDS
@@ -154,9 +186,7 @@ async function sendMessage() {
         addMessage(data.response, "bot");
 
     } catch (error) {
-
         console.error("Error:", error);
-
         addMessage(
             "Sorry, something went wrong.",
             "bot"
@@ -185,11 +215,25 @@ function addMessage(text, type) {
 
     messagesContainer.appendChild(messageElement);
 
-    messagesContainer.scrollTo({
-        top: messagesContainer.scrollHeight,
-        behavior: "smooth"
+    scrollToLatestMessage();
+}
+
+
+
+
+function scrollToLatestMessage() {
+    const lastMessage =
+        messagesContainer.lastElementChild;
+    if (!lastMessage) {
+        return;
+    }
+
+    lastMessage.scrollIntoView({
+        behavior: "smooth",
+        block: "end"
     });
 }
+
 
 /* =========================================================
    UPDATE CONVERSATION
