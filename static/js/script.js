@@ -1,273 +1,61 @@
-/* =========================================================
-   PORTFOLIO CHAT
-   =========================================================
-   Features:
-   1. Startup hero disappears after first message
-   2. Every sidebar chat has its own independent history
-   3. New Chat creates a completely new conversation
-   4. Switching chats restores their messages
-   5. Conversations are saved in localStorage
-   6. Suggestion buttons directly start a conversation
-   7. Existing Flask /chat endpoint is preserved
-========================================================= */
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
 const app = document.querySelector(".app");
-
+const sidebar = document.getElementById("sidebar");
 const menuBtn = document.getElementById("menuBtn");
 const newChatBtn = document.getElementById("newChatBtn");
-
 const chatInput = document.getElementById("chatInput");
 const sendBtn = document.getElementById("sendBtn");
-
 const messagesContainer = document.getElementById("messages");
-
 const suggestions = document.querySelectorAll(".suggestion-card");
-
-const helpBtn = document.getElementById("helpBtn");
-
 const conversationList = document.getElementById("conversationList");
-
-const chatTitle = document.querySelector(".chat-title");
-
+const helpBtn = document.getElementById("helpBtn");
 const hero = document.querySelector(".hero");
 
-/* =========================================================
-   STORAGE
-========================================================= */
-
-const STORAGE_KEY = "shaurya_portfolio_chats_v1";
-
-/* =========================================================
-   CONVERSATION DATA
-========================================================= */
-
-let conversations = {};
-
+let conversations = [];
 let activeConversationId = null;
+let isGenerating = false;
 
-let conversationCount = 0;
-
-/* =========================================================
-   DEFAULT CONVERSATIONS
-========================================================= */
-
-/*
-   These are the conversations that appear when the website
-   is opened for the first time.
-*/
-
-const defaultConversations = {
-  "technical-skills": {
-    id: "technical-skills",
-
-    title: "What are your core technical...",
-
-    preview: "What are your core technical skills?",
-
-    time: "NOW",
-
-    messages: [
-      {
-        type: "user",
-        text: "What are your core technical skills?",
-      },
-
-      {
-        type: "bot",
-        text: "My core technical skills include **Python, AI/ML, backend development, databases, and intelligent software systems**. I also work with computer vision, reinforcement learning, and LLM-based applications.",
-      },
-    ],
-  },
-
-  "challenging-project": {
-    id: "challenging-project",
-
-    title: "Walk me through a challenging...",
-
-    preview: "Walk me through a challenging project.",
-
-    time: "NOW",
-
-    messages: [
-      {
-        type: "user",
-        text: "Walk me through a challenging project.",
-      },
-
-      {
-        type: "bot",
-        text: "One challenging project involved building an **intelligent traffic monitoring and control system** combining computer vision, simulation, and reinforcement learning. The main challenge was coordinating multiple components while keeping the system responsive.",
-      },
-    ],
-  },
-
-  "technical-background": {
-    id: "technical-background",
-
-    title: "Technical background",
-
-    preview: "List down the projects",
-
-    time: "TODAY",
-
-    messages: [
-      {
-        type: "user",
-        text: "List down the projects",
-      },
-
-      {
-        type: "bot",
-        text: "My portfolio includes projects across **AI/ML, backend development, automation, computer vision, and intelligent software systems**. Ask me about any specific project and I can walk you through it.",
-      },
-    ],
-  },
-
-  "open-source": {
-    id: "open-source",
-
-    title: "Open source & projects",
-
-    preview: "Tell me about your side projects",
-
-    time: "YESTERDAY",
-
-    messages: [
-      {
-        type: "user",
-        text: "Tell me about your side projects",
-      },
-
-      {
-        type: "bot",
-        text: "I enjoy building practical developer tools and AI/ML projects. My work includes Python libraries, automation-oriented tools, and applications that combine software engineering with machine learning.",
-      },
-    ],
-  },
-
-  team: {
-    id: "team",
-
-    title: "Team & collaboration",
-
-    preview: "How do you work in a team?",
-
-    time: "AUG 8",
-
-    messages: [
-      {
-        type: "user",
-        text: "How do you work in a team?",
-      },
-
-      {
-        type: "bot",
-        text: "I prefer clear ownership, frequent communication, and small iterative deliverables. I first make sure the requirements are understood, then coordinate interfaces between components and keep progress visible to the team.",
-      },
-    ],
-  },
-};
-
-/* =========================================================
-   LOAD CONVERSATIONS
-========================================================= */
-
-function loadConversations() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if (saved) {
-      const parsed = JSON.parse(saved);
-
-      conversations = parsed.conversations || {};
-
-      conversationCount = parsed.conversationCount || 0;
-
-      return;
-    }
-  } catch (error) {
-    console.error("Could not load saved conversations:", error);
-  }
-
-  /*
-       First visit.
-
-       Start with a blank "New conversation"
-       plus the example conversations.
-    */
-
-  conversations = {};
-
-  Object.keys(defaultConversations).forEach((id) => {
-    conversations[id] = JSON.parse(JSON.stringify(defaultConversations[id]));
-  });
-
-  /*
-       The first conversation is a blank one.
-    */
-
-  const newId = "new-1";
-
-  conversations[newId] = {
-    id: newId,
-
-    title: "New conversation",
-
-    preview: "Start a new conversation...",
-
-    time: "NOW",
-
-    messages: [],
-  };
-
-  activeConversationId = newId;
-}
-
-/* =========================================================
-   SAVE CONVERSATIONS
-========================================================= */
-
-function saveConversations() {
-  try {
-    localStorage.setItem(
-      STORAGE_KEY,
-
-      JSON.stringify({
-        conversations: conversations,
-
-        conversationCount: conversationCount,
-      }),
-    );
-  } catch (error) {
-    console.error("Could not save conversations:", error);
-  }
-}
-
-/* =========================================================
-   CREATE UNIQUE ID
-========================================================= */
+// Create a unique conversation ID
 
 function createConversationId() {
-  conversationCount++;
-
-  return "chat-" + Date.now() + "-" + conversationCount;
+  return (
+    Date.now().toString() + "-" + Math.random().toString(36).substring(2, 9)
+  );
 }
 
-/* =========================================================
-   GET ACTIVE CONVERSATION
-========================================================= */
+// Create a new conversation object
 
-function getActiveConversation() {
-  return conversations[activeConversationId];
+function createConversation() {
+  return {
+    id: createConversationId(),
+    title: "New conversation",
+    preview: "Start a new conversation...",
+    messages: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
 }
 
-/* =========================================================
-   SIDEBAR TOGGLE
-========================================================= */
+// Create the initial empty conversation
+
+function initializeChat() {
+  const conversation = createConversation();
+
+  conversations.push(conversation);
+
+  activeConversationId = conversation.id;
+
+  renderConversationList();
+
+  renderMessages();
+
+  updateChatTitle();
+}
+
+// Initialize the application
+
+initializeChat();
+
+// Toggle sidebar
 
 if (menuBtn) {
   menuBtn.addEventListener("click", () => {
@@ -275,295 +63,379 @@ if (menuBtn) {
   });
 }
 
-/* =========================================================
-   RENDER SIDEBAR
-========================================================= */
+// Create a new chat
 
-function renderConversationList() {
-  conversationList.innerHTML = "";
-
-  /*
-       Sort conversations so the currently active one
-       appears first.
-    */
-
-  const conversationArray = Object.values(conversations);
-
-  conversationArray.sort((a, b) => {
-    if (a.id === activeConversationId) {
-      return -1;
+if (newChatBtn) {
+  newChatBtn.addEventListener("click", () => {
+    if (isGenerating) {
+      return;
     }
 
-    if (b.id === activeConversationId) {
-      return 1;
-    }
+    const conversation = createConversation();
 
-    return 0;
-  });
+    conversations.push(conversation);
 
-  conversationArray.forEach((conversation) => {
-    const button = document.createElement("button");
+    activeConversationId = conversation.id;
 
-    button.classList.add("conversation");
+    renderConversationList();
 
-    button.dataset.chatId = conversation.id;
+    renderMessages();
 
-    if (conversation.id === activeConversationId) {
-      button.classList.add("active");
-    }
+    updateChatTitle();
 
-    button.innerHTML = `
+    chatInput.value = "";
 
-                <div class="conversation-content">
+    chatInput.style.height = "auto";
 
-                    <span class="conversation-title"></span>
-
-                    <span class="conversation-preview"></span>
-
-                </div>
-
-                <span class="conversation-time"></span>
-
-            `;
-
-    button.querySelector(".conversation-title").textContent =
-      conversation.title;
-
-    button.querySelector(".conversation-preview").textContent =
-      conversation.preview;
-
-    button.querySelector(".conversation-time").textContent = conversation.time;
-
-    conversationList.appendChild(button);
+    chatInput.focus();
   });
 }
 
-/* =========================================================
-   UPDATE HERO / CHAT STATE
-========================================================= */
+// Select a conversation
 
-function updateChatState() {
+if (conversationList) {
+  conversationList.addEventListener("click", (event) => {
+    const item = event.target.closest(".conversation");
+
+    if (!item) {
+      return;
+    }
+
+    const id = item.dataset.conversationId;
+
+    if (!id) {
+      return;
+    }
+
+    activeConversationId = id;
+
+    renderConversationList();
+
+    renderMessages();
+
+    updateChatTitle();
+  });
+}
+
+// Get the active conversation
+
+function getActiveConversation() {
+  return conversations.find(
+    (conversation) => conversation.id === activeConversationId,
+  );
+}
+
+// Render conversation sidebar
+
+function renderConversationList() {
+  if (!conversationList) {
+    return;
+  }
+
+  conversationList.innerHTML = "";
+
+  const sorted = [...conversations].sort(
+    (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt),
+  );
+
+  sorted.forEach((conversation) => {
+    const item = document.createElement("button");
+
+    item.classList.add("conversation");
+
+    item.dataset.conversationId = conversation.id;
+
+    if (conversation.id === activeConversationId) {
+      item.classList.add("active");
+    }
+
+    const title = escapeHTML(conversation.title);
+
+    const preview = escapeHTML(conversation.preview);
+
+    item.innerHTML = `
+                <div class="conversation-content">
+                    <span class="conversation-title">
+                        ${title}
+                    </span>
+
+                    <span class="conversation-preview">
+                        ${preview}
+                    </span>
+                </div>
+
+                <span class="conversation-time">
+                    ${formatConversationTime(conversation.updatedAt)}
+                </span>
+            `;
+
+    conversationList.appendChild(item);
+  });
+}
+
+// Update sidebar information
+
+function updateConversationInfo(conversation, message) {
+  if (conversation.messages.length === 1) {
+    conversation.title =
+      message.length > 35 ? message.substring(0, 35) + "..." : message;
+  }
+
+  conversation.preview =
+    message.length > 45 ? message.substring(0, 45) + "..." : message;
+
+  conversation.updatedAt = new Date().toISOString();
+}
+
+// Update chat title
+
+function updateChatTitle() {
+  const chatTitle = document.querySelector(".chat-title");
+
+  if (!chatTitle) {
+    return;
+  }
+
   const conversation = getActiveConversation();
 
   if (!conversation) {
     return;
   }
-
-  const hasMessages = conversation.messages.length > 0;
-
-  /*
-       IMPORTANT:
-
-       If there are no messages:
-       show the startup hero.
-
-       If there are messages:
-       completely hide the startup hero.
-    */
-
-  if (hasMessages) {
-    hero.classList.add("hidden");
-
-    messagesContainer.classList.add("has-messages");
-  } else {
-    hero.classList.remove("hidden");
-
-    messagesContainer.classList.remove("has-messages");
-  }
-
-  /*
-       Update title at the top.
-    */
 
   chatTitle.textContent = conversation.title;
 }
 
-/* =========================================================
-   RENDER MESSAGES
-========================================================= */
+// Render all messages in active conversation
 
 function renderMessages() {
+  if (!messagesContainer) {
+    return;
+  }
+
   const conversation = getActiveConversation();
 
   if (!conversation) {
     return;
   }
 
-  /*
-       Clear currently displayed messages.
-    */
-
   messagesContainer.innerHTML = "";
 
-  /*
-       Render messages belonging ONLY
-       to the active conversation.
-    */
+  if (conversation.messages.length === 0) {
+    showHero();
+
+    return;
+  }
+
+  hideHero();
 
   conversation.messages.forEach((message) => {
     addMessageToDOM(message.text, message.type, false, message.timestamp);
   });
 
-  updateChatState();
+  scrollToLatestMessage("auto");
+}
 
-  /*
-       Scroll to bottom when switching
-       to a conversation containing messages.
-    */
+// Show startup hero
 
-  if (conversation.messages.length > 0) {
-    setTimeout(() => {
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }, 50);
+function showHero() {
+  if (hero) {
+    hero.classList.remove("hidden");
+  }
+
+  messagesContainer.classList.remove("has-messages");
+}
+
+// Hide startup hero
+
+function hideHero() {
+  if (hero) {
+    hero.classList.add("hidden");
+  }
+
+  messagesContainer.classList.add("has-messages");
+}
+
+// Add message to the DOM
+
+function addMessageToDOM(text, type, shouldScroll = true, timestamp = null) {
+  const messageElement = document.createElement("div");
+
+  messageElement.classList.add("message", type);
+
+  const avatar = document.createElement("div");
+
+  avatar.classList.add("message-avatar");
+
+  avatar.textContent = type === "user" ? "YOU" : "AI";
+
+  const messageBody = document.createElement("div");
+
+  messageBody.classList.add("message-body");
+
+  const content = document.createElement("div");
+
+  content.classList.add("message-content");
+
+  if (type === "bot") {
+    if (typeof marked !== "undefined") {
+      content.innerHTML = marked.parse(text);
+    } else {
+      content.textContent = text;
+    }
+  } else {
+    content.textContent = text;
+  }
+
+  const timeElement = document.createElement("div");
+
+  timeElement.classList.add("message-time");
+
+  const time = timestamp ? new Date(timestamp) : new Date();
+
+  timeElement.textContent = formatMessageTime(time);
+
+  messageBody.appendChild(content);
+
+  messageBody.appendChild(timeElement);
+
+  messageElement.appendChild(avatar);
+
+  messageElement.appendChild(messageBody);
+
+  messagesContainer.appendChild(messageElement);
+
+  if (shouldScroll) {
+    scrollToLatestMessage("smooth");
   }
 }
 
-/* =========================================================
-   SIDEBAR CONVERSATION CLICK
-========================================================= */
+// Create empty streaming message
 
-conversationList.addEventListener("click", (event) => {
-  const button = event.target.closest(".conversation");
+function createStreamingMessage() {
+  const messageElement = document.createElement("div");
 
-  if (!button) {
+  messageElement.classList.add("message", "bot", "streaming-message");
+
+  const avatar = document.createElement("div");
+
+  avatar.classList.add("message-avatar");
+
+  avatar.textContent = "AI";
+
+  const messageBody = document.createElement("div");
+
+  messageBody.classList.add("message-body");
+
+  const content = document.createElement("div");
+
+  content.classList.add("message-content", "streaming-content");
+
+  content.textContent = "";
+
+  const timeElement = document.createElement("div");
+
+  timeElement.classList.add("message-time");
+
+  timeElement.textContent = formatMessageTime(new Date());
+
+  messageBody.appendChild(content);
+
+  messageBody.appendChild(timeElement);
+
+  messageElement.appendChild(avatar);
+
+  messageElement.appendChild(messageBody);
+
+  messagesContainer.appendChild(messageElement);
+
+  scrollToLatestMessage("auto");
+
+  return messageElement;
+}
+
+// Update streaming message
+
+function updateStreamingMessage(messageElement, text) {
+  const content = messageElement.querySelector(".streaming-content");
+
+  if (!content) {
     return;
   }
 
-  const id = button.dataset.chatId;
+  content.textContent = text;
 
-  if (!id || !conversations[id]) {
+  requestAnimationFrame(() => {
+    scrollDuringStreaming();
+  });
+}
+
+// Finalize streaming message
+
+function finalizeStreamingMessage(messageElement, text) {
+  const content = messageElement.querySelector(".streaming-content");
+
+  if (!content) {
     return;
   }
 
-  /*
-           Switch active conversation.
-        */
-
-  activeConversationId = id;
-
-  /*
-           Re-render sidebar so active
-           styling changes.
-        */
-
-  renderConversationList();
-
-  /*
-           Load messages belonging
-           to this conversation.
-        */
-
-  renderMessages();
-
-  /*
-           Clear input.
-        */
-
-  chatInput.value = "";
-
-  chatInput.style.height = "auto";
-
-  chatInput.focus();
-});
-
-/* =========================================================
-   NEW CHAT
-========================================================= */
-
-newChatBtn.addEventListener("click", () => {
-  const id = createConversationId();
-
-  /*
-           Create completely independent
-           conversation.
-        */
-
-  conversations[id] = {
-    id: id,
-
-    title: "New conversation",
-
-    preview: "Start a new conversation...",
-
-    time: "NOW",
-
-    messages: [],
-  };
-
-  /*
-           Make it active.
-        */
-
-  activeConversationId = id;
-
-  /*
-           Clear input.
-        */
-
-  chatInput.value = "";
-
-  chatInput.style.height = "auto";
-
-  /*
-           Render blank chat.
-
-           Because messages.length === 0,
-           the startup hero will appear again.
-        */
-
-  renderConversationList();
-
-  renderMessages();
-
-  chatInput.focus();
-
-  saveConversations();
-});
-
-/* =========================================================
-   CREATE CHAT TITLE
-========================================================= */
-
-function createChatTitle(message) {
-  const cleaned = message.trim().replace(/\s+/g, " ");
-
-  if (cleaned.length > 34) {
-    return cleaned.substring(0, 34).trimEnd() + "...";
+  if (typeof marked !== "undefined") {
+    content.innerHTML = marked.parse(text);
+  } else {
+    content.textContent = text;
   }
 
-  return cleaned || "New conversation";
+  content.classList.remove("streaming-content");
+
+  messageElement.classList.remove("streaming-message");
+
+  scrollToLatestMessage("smooth");
 }
 
-/* =========================================================
-   UPDATE SIDEBAR AFTER MESSAGE
-========================================================= */
+// Show typing indicator
 
-function updateConversationInfo(conversation, message) {
-  /*
-       Only the first message determines
-       the conversation title.
-    */
+function showTypingIndicator() {
+  hideTypingIndicator();
 
-  if (conversation.messages.length === 1) {
-    conversation.title = createChatTitle(message);
+  const typingElement = document.createElement("div");
+
+  typingElement.id = "typingIndicator";
+
+  typingElement.classList.add("message", "bot", "typing-message");
+
+  typingElement.innerHTML = `
+        <span class="typing-label">
+            AI is typing
+        </span>
+
+        <span class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </span>
+    `;
+
+  messagesContainer.appendChild(typingElement);
+
+  scrollToLatestMessage("auto");
+}
+
+// Hide typing indicator
+
+function hideTypingIndicator() {
+  const typingElement = document.getElementById("typingIndicator");
+
+  if (typingElement) {
+    typingElement.remove();
   }
-
-  /*
-       Preview is always the latest
-       user message.
-    */
-
-  conversation.preview =
-    message.length > 48 ? message.substring(0, 48) + "..." : message;
-
-  conversation.time = "NOW";
 }
 
-/* =========================================================
-   SEND MESSAGE
-========================================================= */
+// Send message
 
 async function sendMessage() {
+  if (isGenerating) {
+    return;
+  }
+
   const message = chatInput.value.trim();
 
   if (!message) {
@@ -576,77 +448,46 @@ async function sendMessage() {
     return;
   }
 
-  /*
-       Check whether this is the
-       FIRST message in this chat.
-    */
+  isGenerating = true;
 
-  const firstMessage = conversation.messages.length === 0;
+  sendBtn.disabled = true;
 
-  /* =====================================================
-       USER MESSAGE
-    ===================================================== */
+  const timestamp = new Date().toISOString();
+
+  // Add user message to memory
 
   conversation.messages.push({
     type: "user",
-    text: message,
-    timestamp: new Date().toISOString(),
-  });
 
-  /*
-       Update sidebar title/preview.
-    */
+    text: message,
+
+    timestamp: timestamp,
+  });
 
   updateConversationInfo(conversation, message);
 
-  /*
-       Clear input.
-    */
+  // Hide startup screen
+
+  hideHero();
+
+  // Clear input
 
   chatInput.value = "";
 
   chatInput.style.height = "auto";
 
-  /*
-       Hide startup screen immediately.
-
-       This is the important transition
-       you requested.
-    */
-
-  if (firstMessage) {
-    hero.classList.add("hidden");
-
-    messagesContainer.classList.add("has-messages");
-  }
-
-  /*
-       Update sidebar.
-    */
+  // Update sidebar
 
   renderConversationList();
 
-  /*
-       Display the user message.
-    */
+  updateChatTitle();
 
-  renderMessages();
+  // Display user message
 
-  /*
-       Save immediately.
-    */
-
-  saveConversations();
-
-  /* =====================================================
-       SEND TO FLASK BACKEND
-    ===================================================== */
+  addMessageToDOM(message, "user", true, timestamp);
 
   try {
-    /*
-         Show the animated typing indicator
-         while Flask/LLM is generating.
-      */
+    // Show typing indicator
 
     showTypingIndicator();
 
@@ -666,397 +507,181 @@ async function sendMessage() {
       throw new Error(`HTTP ${response.status}`);
     }
 
-    const data = await response.json();
+    if (!response.body) {
+      throw new Error("Streaming is not supported.");
+    }
 
-    /*
-         Remove "AI is typing..."
-         before displaying the real response.
-      */
+    // Remove typing indicator
 
     hideTypingIndicator();
 
-    /*
-         Get bot response from Flask.
-      */
+    // Create empty AI message
 
-    const botResponse =
-      data.response || "Sorry, I couldn't generate a response.";
+    const botMessageElement = createStreamingMessage();
 
-    /*
-         Save bot response to THIS conversation.
+    const reader = response.body.getReader();
 
-         Timestamp is saved so the original
-         message time is preserved.
-      */
+    const decoder = new TextDecoder("utf-8");
+
+    let botResponse = "";
+
+    // Read streamed response
+
+    while (true) {
+      const { value, done } = await reader.read();
+
+      if (done) {
+        break;
+      }
+
+      const chunk = decoder.decode(value, {
+        stream: true,
+      });
+
+      if (!chunk) {
+        continue;
+      }
+
+      botResponse += chunk;
+
+      // Update AI message
+
+      updateStreamingMessage(botMessageElement, botResponse);
+
+      // Keep newest content visible
+
+      scrollDuringStreaming();
+    }
+
+    // Flush decoder
+
+    botResponse += decoder.decode();
+
+    // Save complete AI response
 
     conversation.messages.push({
       type: "bot",
+
       text: botResponse,
+
       timestamp: new Date().toISOString(),
     });
 
-    saveConversations();
+    conversation.updatedAt = new Date().toISOString();
 
-    /*
-         IMPORTANT:
+    // Update sidebar
 
-         Only display the response if
-         the user is still viewing this chat.
+    renderConversationList();
 
-         If they switched to another chat
-         while Flask was responding,
-         don't overwrite the current chat.
-      */
+    // Render final Markdown
 
-    if (activeConversationId === conversation.id) {
-      addMessageToDOM(botResponse, "bot", true);
-    }
+    finalizeStreamingMessage(botMessageElement, botResponse);
   } catch (error) {
     console.error("Chat error:", error);
 
-    /*
-         ALWAYS remove the typing indicator
-         if something goes wrong.
-      */
-
     hideTypingIndicator();
 
-    /*
-         Fallback response.
+    const streamingMessage =
+      messagesContainer.querySelector(".streaming-message");
 
-         Useful when Flask /chat is unavailable
-         during local frontend testing.
-      */
+    if (streamingMessage) {
+      streamingMessage.remove();
+    }
 
-    const fallback = generateDemoResponse(message);
+    // Display actual error
 
-    /*
-         Save fallback response with timestamp.
-      */
+    const errorMessage = "Sorry, I couldn't generate a response right now.";
+
+    const errorTimestamp = new Date().toISOString();
 
     conversation.messages.push({
       type: "bot",
-      text: fallback,
-      timestamp: new Date().toISOString(),
+
+      text: errorMessage,
+
+      timestamp: errorTimestamp,
     });
 
-    saveConversations();
+    conversation.updatedAt = errorTimestamp;
 
-    /*
-         Only show it if this conversation
-         is still active.
-      */
+    addMessageToDOM(errorMessage, "bot", true, errorTimestamp);
 
-    if (activeConversationId === conversation.id) {
-      addMessageToDOM(fallback, "bot", true);
-    }
+    renderConversationList();
+  } finally {
+    isGenerating = false;
+
+    sendBtn.disabled = false;
+
+    chatInput.focus();
   }
 }
 
-/* =========================================================
-   ADD MESSAGE TO DOM
-========================================================= */
+// Scroll to latest message
 
-function addMessageToDOM(text, type, shouldScroll = true, timestamp=null) {
-  const messageRow = document.createElement("div");
-
-  messageRow.classList.add("message-row", type);
-
-  /* =====================================================
-       AVATAR
-    ===================================================== */
-
-  const avatar = document.createElement("div");
-
-  avatar.classList.add("message-avatar");
-
-  if (type === "user") {
-    /*
-           User icon.
-
-           This is an inline SVG, so you don't need
-           Font Awesome or another icon library.
-        */
-
-    avatar.innerHTML = `
-            <svg
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-            >
-                <circle
-                    cx="12"
-                    cy="8"
-                    r="3.5"
-                ></circle>
-
-                <path
-                    d="M5 20c0-3.8 3.1-6 7-6s7 2.2 7 6"
-                ></path>
-            </svg>
-        `;
-  } else {
-    /*
-           AI icon.
-        */
-
-    avatar.innerHTML = `
-            <span class="ai-icon">AI</span>
-        `;
-  }
-
-  /* =====================================================
-       MESSAGE BODY
-    ===================================================== */
-
-  const messageBody = document.createElement("div");
-
-  messageBody.classList.add("message-body");
-
-  /* =====================================================
-       MESSAGE CONTENT
-    ===================================================== */
-
-  const messageContent = document.createElement("div");
-
-  messageContent.classList.add("message-content");
-
-  /*
-       Bot responses support Markdown.
-    */
-
-  if (type === "bot") {
-    if (typeof marked !== "undefined") {
-      messageContent.innerHTML = marked.parse(text);
-    } else {
-      messageContent.textContent = text;
-    }
-  } else {
-    /*
-           User text remains plain text.
-        */
-
-    messageContent.textContent = text;
-  }
-
-  /* =====================================================
-       TIMESTAMP
-    ===================================================== */
-
-  const meta = document.createElement("div");
-
-  meta.classList.add("message-meta");
-
-  const label = type === "user" ? "YOU" : "AI";
-
-  const messageTime = timestamp
-    ? formatMessageTime(new Date(timestamp))
-    : formatMessageTime(new Date());
-
-  meta.textContent = `${label} · ${messageTime}`;
-
-  /* =====================================================
-       ASSEMBLE MESSAGE
-    ===================================================== */
-
-  messageBody.appendChild(messageContent);
-
-  messageBody.appendChild(meta);
-
-  messageRow.appendChild(avatar);
-
-  messageRow.appendChild(messageBody);
-
-  messagesContainer.appendChild(messageRow);
-
-  /* =====================================================
-       SCROLL
-    ===================================================== */
-
-  if (shouldScroll) {
-    setTimeout(() => {
-      messagesContainer.scrollTo({
-        top: messagesContainer.scrollHeight,
-
-        behavior: "smooth",
-      });
-    }, 30);
-  }
-}
-
-/* =========================================================
-   TYPING INDICATOR
-========================================================= */
-
-function showTypingIndicator() {
-  /*
-       Don't create multiple indicators.
-    */
-
-  if (document.getElementById("typing-indicator")) {
-    return;
-  }
-
-  const typingRow = document.createElement("div");
-
-  typingRow.id = "typing-indicator";
-
-  typingRow.classList.add("message-row", "bot", "typing-row");
-
-  /* =====================================================
-       AI AVATAR
-    ===================================================== */
-
-  const avatar = document.createElement("div");
-
-  avatar.classList.add("message-avatar");
-
-  avatar.innerHTML = `
-        <span class="ai-icon">
-            AI
-        </span>
-    `;
-
-  /* =====================================================
-       TYPING BODY
-    ===================================================== */
-
-  const body = document.createElement("div");
-
-  body.classList.add("message-body");
-
-  const typingContent = document.createElement("div");
-
-  typingContent.classList.add("typing-content");
-
-  typingContent.innerHTML = `
-
-        <div class="typing-dots">
-
-            <span></span>
-            <span></span>
-            <span></span>
-
-        </div>
-
-        <span class="typing-text">
-            AI is typing...
-        </span>
-
-    `;
-
-  body.appendChild(typingContent);
-
-  typingRow.appendChild(avatar);
-
-  typingRow.appendChild(body);
-
-  messagesContainer.appendChild(typingRow);
-
-  /*
-       Scroll to indicator.
-    */
-
-  setTimeout(() => {
+function scrollToLatestMessage(behavior = "smooth") {
+  requestAnimationFrame(() => {
     messagesContainer.scrollTo({
       top: messagesContainer.scrollHeight,
 
-      behavior: "smooth",
+      behavior: behavior,
     });
-  }, 20);
+  });
 }
 
-/* =========================================================
-   REMOVE TYPING INDICATOR
-========================================================= */
+// Progressive scroll during streaming
 
-function hideTypingIndicator() {
-  const indicator = document.getElementById("typing-indicator");
-
-  if (indicator) {
-    indicator.remove();
-  }
+function scrollDuringStreaming() {
+  requestAnimationFrame(() => {
+    messagesContainer.scrollTo({
+      top: messagesContainer.scrollHeight,
+      behavior: "auto",
+    });
+  });
 }
 
-/* =========================================================
-   MESSAGE TIME
-========================================================= */
+// Format message time
 
 function formatMessageTime(date) {
   return date.toLocaleTimeString([], {
-    hour: "2-digit",
+    hour: "numeric",
     minute: "2-digit",
-    hour12: true,
   });
 }
 
-/* =========================================================
-   SUGGESTION BUTTONS
-========================================================= */
+// Format sidebar conversation time
 
-suggestions.forEach((suggestion) => {
-  suggestion.addEventListener("click", () => {
-    const question = suggestion.dataset.question;
+function formatConversationTime(timestamp) {
+  const date = new Date(timestamp);
 
-    if (!question) {
-      return;
-    }
+  const now = new Date();
 
-    /*
-                   Put question into input.
-                */
+  const sameDay = date.toDateString() === now.toDateString();
 
-    chatInput.value = question;
-
-    resizeTextarea();
-
-    /*
-                   IMPORTANT:
-
-                   Immediately send it.
-
-                   So clicking a suggestion
-                   changes the screen from:
-
-                   HERO
-
-                   to:
-
-                   CHAT
-                */
-
-    sendMessage();
-  });
-});
-
-/* =========================================================
-   SEND BUTTON
-========================================================= */
-
-sendBtn.addEventListener("click", () => {
-  sendMessage();
-});
-
-/* =========================================================
-   ENTER TO SEND
-========================================================= */
-
-chatInput.addEventListener("keydown", (event) => {
-  /*
-           Enter = send
-
-           Shift + Enter = new line
-        */
-
-  if (event.key === "Enter" && !event.shiftKey) {
-    event.preventDefault();
-
-    sendMessage();
+  if (sameDay) {
+    return date.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
   }
-});
 
-/* =========================================================
-   AUTO RESIZE TEXTAREA
-========================================================= */
+  return date.toLocaleDateString([], {
+    day: "2-digit",
+    month: "short",
+  });
+}
+
+// Escape HTML
+
+function escapeHTML(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Resize textarea
 
 function resizeTextarea() {
   chatInput.style.height = "auto";
@@ -1066,96 +691,57 @@ function resizeTextarea() {
 
 chatInput.addEventListener("input", resizeTextarea);
 
-/* =========================================================
-   HELP BUTTON
-========================================================= */
+// Send using Enter
+
+chatInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+
+    sendMessage();
+  }
+});
+
+// Send button
+
+sendBtn.addEventListener("click", sendMessage);
+
+// Suggestion cards
+
+document.addEventListener("click", (event) => {
+  const suggestion = event.target.closest(".suggestion-card");
+
+  if (!suggestion) {
+    return;
+  }
+
+  const question = suggestion.getAttribute("data-question");
+
+  if (!question) {
+    console.error("Suggestion is missing data-question:", suggestion);
+    return;
+  }
+
+  chatInput.value = question;
+
+  resizeTextarea();
+
+  chatInput.focus();
+});
+
+// Help button
 
 if (helpBtn) {
   helpBtn.addEventListener("click", () => {
     alert(
-      "Ask the portfolio bot about experience, technical skills, projects, education, or career interests.",
+      "Ask the portfolio bot about experience, " +
+        "technical skills, projects, education, " +
+        "or career interests.",
     );
   });
 }
 
-/* =========================================================
-   DEMO RESPONSE
-========================================================= */
+// Focus input when page loads
 
-/*
-   This is only a fallback.
-
-   Your real Flask /chat response will be used
-   whenever the backend responds successfully.
-*/
-
-function generateDemoResponse(question) {
-  const q = question.toLowerCase();
-
-  if (q.includes("technical") || q.includes("skills")) {
-    return "My core technical skills include **Python, AI/ML, backend development, databases, and building intelligent software systems.**";
-  }
-
-  if (q.includes("project") || q.includes("challenging")) {
-    return "One of my challenging projects involved building an **intelligent traffic monitoring and control system** combining computer vision, simulation, and reinforcement learning.";
-  }
-
-  if (q.includes("system design")) {
-    return "I approach system design by first defining the requirements and constraints, then breaking the system into modular components and identifying how data flows between them.";
-  }
-
-  if (q.includes("ai") || q.includes("ml") || q.includes("machine learning")) {
-    return "I have worked with machine learning and AI concepts including **computer vision, YOLO, reinforcement learning, and LLM-based applications.**";
-  }
-
-  if (q.includes("role") || q.includes("job")) {
-    return "I'm interested in software engineering and AI/ML-oriented roles where I can work on real-world intelligent systems.";
-  }
-
-  if (q.includes("deadline") || q.includes("pressure")) {
-    return "I handle deadlines by breaking the work into smaller milestones, prioritizing the critical components, and iterating toward a working solution.";
-  }
-
-  return "That's a good question. In the complete version of this portfolio bot, this response would be generated by the LLM using the portfolio data.";
-}
-
-/* =========================================================
-   INITIALIZE
-========================================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
-  /*
-           Load saved chats.
-        */
-
-  loadConversations();
-
-  /*
-           If no active conversation was
-           assigned, use the first one.
-        */
-
-  if (!activeConversationId || !conversations[activeConversationId]) {
-    const ids = Object.keys(conversations);
-
-    activeConversationId = ids.length > 0 ? ids[ids.length - 1] : null;
-  }
-
-  /*
-           Render sidebar.
-        */
-
-  renderConversationList();
-
-  /*
-           Render active chat.
-        */
-
-  renderMessages();
-
-  /*
-           Focus input.
-        */
-
+window.addEventListener("load", () => {
   chatInput.focus();
 });

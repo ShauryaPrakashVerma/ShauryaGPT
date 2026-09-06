@@ -339,7 +339,7 @@ body {
   position: relative;
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
+  overflow: hidden;
   background: #080808;
 }
 
@@ -477,37 +477,387 @@ body {
 }
 
 /* =========================================================
-   MESSAGES
+   CHAT MESSAGES
 ========================================================= */
 
 .messages {
-  position: relative;
-  z-index: 3;
-  width: min(760px, calc(100% - 40px));
-  margin: 30px auto 100px;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  margin: 0;
+  padding: 26px 7vw 180px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 26px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  min-height: 0;
+  box-sizing: border-box;
+  -ms-overflow-style: none;
 }
 
+.messages::-webkit-scrollbar {
+  display: none;
+}
+
+.messages.has-messages {
+  padding-top: 26px;
+}
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
 .message {
-  max-width: 75%;
-  padding: 13px 16px;
-  border: 1px solid #252525;
-  font-size: 13px;
-  line-height: 1.6;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  box-sizing: border-box;
+  animation: messageIn 0.22s ease both;
 }
 
 .message.user {
-  align-self: flex-end;
-  background: #151515;
-  color: #ccc;
+  justify-content: flex-end;
+  background: transparent;
+  color: #111;
+}
+
+.message.user .message-avatar {
+  order: 2;
+}
+
+.message.user .message-body {
+  align-items: flex-end;
 }
 
 .message.bot {
-  align-self: flex-start;
-  background: #0d0d0d;
+  justify-content: flex-start;
+  background: transparent;
   color: #aaa;
+}
+
+.message.bot .message-body {
+  align-items: flex-start;
+}
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+.message-avatar {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 1px solid #292929;
+  background: #101010;
+  color: #777;
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0.5px;
+}
+
+.message.user .message-avatar {
+  background: #fff;
+  border-color: #fff;
+  color: #111;
+}
+
+/* =========================================================
+   MESSAGE BODY
+========================================================= */
+
+.message-body {
+  min-width: 0;
+  max-width: min(620px, 75%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* =========================================================
+   MESSAGE CONTENT
+========================================================= */
+
+.message-content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.message.user .message-content {
+  padding: 12px 15px;
+  background: #fff;
+  border: 1px solid #fff;
+  color: #111;
+}
+
+.message.bot .message-content {
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #aaa;
+}
+
+/* =========================================================
+   MESSAGE TIME
+========================================================= */
+
+.message-time {
+  margin-top: 0;
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+  line-height: 1;
+  letter-spacing: 1px;
+  color: #3f3f3f;
+  text-transform: uppercase;
+}
+
+.message.bot .message-time {
+  align-self: flex-start;
+  text-align: left;
+}
+
+.message.user .message-time {
+  align-self: flex-end;
+  text-align: right;
+}
+
+/* =========================================================
+   BOT MARKDOWN
+========================================================= */
+
+.message.bot p {
+  margin: 0 0 14px;
+}
+
+.message.bot p:last-child {
+  margin-bottom: 0;
+}
+
+.message.bot h1,
+.message.bot h2,
+.message.bot h3 {
+  margin: 18px 0 10px;
+  color: #e5e5e5;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+}
+
+.message.bot h1 {
+  font-size: 20px;
+}
+
+.message.bot h2 {
+  font-size: 17px;
+}
+
+.message.bot h3 {
+  font-size: 14px;
+}
+
+.message.bot strong {
+  color: #eeeeee;
+  font-weight: 600;
+}
+
+.message.bot em {
+  color: #bdbdbd;
+}
+
+.message.bot ul,
+.message.bot ol {
+  margin: 10px 0 14px;
+  padding-left: 22px;
+}
+
+.message.bot li {
+  margin-bottom: 6px;
+}
+
+.message.bot code {
+  padding: 2px 5px;
+  background: #181818;
+  border: 1px solid #292929;
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  color: #ccc;
+}
+
+.message.bot pre {
+  margin: 14px 0;
+  padding: 14px;
+  overflow-x: auto;
+  background: #080808;
+  border: 1px solid #292929;
+}
+
+.message.bot pre code {
+  padding: 0;
+  background: transparent;
+  border: none;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.message.bot blockquote {
+  margin: 12px 0;
+  padding-left: 14px;
+  border-left: 2px solid #444;
+  color: #888;
+}
+
+.message.bot a {
+  color: #aaa;
+  text-decoration: underline;
+}
+
+.message.bot hr {
+  margin: 18px 0;
+  border: none;
+  border-top: 1px solid #292929;
+}
+
+/* =========================================================
+   STREAMING
+========================================================= */
+
+.streaming-content::after {
+  content: "▋";
+  display: inline-block;
+  margin-left: 3px;
+  animation: streamCursor 0.8s steps(1) infinite;
+}
+
+@keyframes streamCursor {
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* =========================================================
+   TYPING INDICATOR
+========================================================= */
+
+.typing-message {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.typing-message .message-body {
+  align-items: flex-start;
+}
+
+.typing-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+}
+
+.typing-text {
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0.5px;
+  color: #4a4a4a;
+}
+
+.typing-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.typing-dots span {
+  width: 4px;
+  height: 4px;
+  display: block;
+  border-radius: 50%;
+  background: #777;
+  animation: typingDot 1.2s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes typingDot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+/* =========================================================
+   CHAT STATE
+========================================================= */
+
+.hero {
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease,
+    visibility 0.28s ease;
+}
+
+.hero.hidden {
+  display: none;
+}
+
+.chat-area:has(.hero.hidden) .background-grid {
+  opacity: 0.45;
+}
+
+/* =========================================================
+   MESSAGE ANIMATION
+========================================================= */
+
+@keyframes messageIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* =========================================================
@@ -716,435 +1066,109 @@ body {
     font-size: 13px;
   }
 }
-/* =========================================================
-   MARKDOWN BOT RESPONSE
-========================================================= */
-
-.message.bot {
-  line-height: 1.7;
-}
-
-.message.bot p {
-  margin: 0 0 14px;
-}
-
-.message.bot p:last-child {
-  margin-bottom: 0;
-}
-
-.message.bot h1,
-.message.bot h2,
-.message.bot h3 {
-  margin: 18px 0 10px;
-  color: #e5e5e5;
-  font-family: "Inter", sans-serif;
-  font-weight: 600;
-}
-
-.message.bot h1 {
-  font-size: 20px;
-}
-
-.message.bot h2 {
-  font-size: 17px;
-}
-
-.message.bot h3 {
-  font-size: 14px;
-}
-
-.message.bot strong {
-  color: #eeeeee;
-  font-weight: 600;
-}
-
-.message.bot em {
-  color: #bdbdbd;
-}
-
-.message.bot ul,
-.message.bot ol {
-  margin: 10px 0 14px;
-  padding-left: 22px;
-}
-
-.message.bot li {
-  margin-bottom: 6px;
-}
-
-.message.bot code {
-  padding: 2px 5px;
-  background: #181818;
-  border: 1px solid #292929;
-  font-family: "DM Mono", monospace;
-  font-size: 11px;
-  color: #ccc;
-}
-
-.message.bot pre {
-  margin: 14px 0;
-  padding: 14px;
-  overflow-x: auto;
-  background: #080808;
-  border: 1px solid #292929;
-}
-
-.message.bot pre code {
-  padding: 0;
-  background: transparent;
-  border: none;
-  font-size: 11px;
-  line-height: 1.6;
-}
-
-.message.bot blockquote {
-  margin: 12px 0;
-  padding-left: 14px;
-  border-left: 2px solid #444;
-  color: #888;
-}
-
-.message.bot a {
-  color: #aaa;
-  text-decoration: underline;
-}
-
-.message.bot hr {
-  margin: 18px 0;
-  border: none;
-  border-top: 1px solid #292929;
-}
-.messages {
-  scroll-margin-bottom: 30px;
-}
 
 /* =========================================================
-   CHAT STATE TRANSITIONS
-========================================================= */
-.hero {
-  transition:
-    opacity 0.28s ease,
-    transform 0.28s ease,
-    visibility 0.28s ease;
-}
-
-.hero.hidden {
-  display: none;
-}
-
-.messages {
-  min-height: 0;
-}
-
-.messages.has-messages {
-  padding-top: 26px;
-}
-
-.message {
-  width: fit-content;
-  max-width: min(75%, 620px);
-  animation: messageIn 0.22s ease both;
-}
-
-@keyframes messageIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.chat-area:has(.hero.hidden) .background-grid {
-  opacity: 0.45;
-}
-
-@media (max-width: 800px) {
-  .message {
-    max-width: 88%;
-  }
-}
-
-/* =========================================================
-   DETAILED CHAT MESSAGES
-========================================================= */
-
-.message-row {
-  width: 100%;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  animation: messageIn 0.22s ease both;
-}
-
-/* =========================================================
-   USER MESSAGE
-========================================================= */
-
-.message-row.user {
-  flex-direction: row-reverse;
-}
-
-/* =========================================================
-   MESSAGE AVATAR
-========================================================= */
-
-.message-avatar {
-  width: 28px;
-  height: 28px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid #292929;
-
-  background: #101010;
-
-  color: #777;
-}
-
-/* User avatar */
-
-.message-row.user .message-avatar {
-  background: #eeeeee;
-  border-color: #eeeeee;
-  color: #111;
-}
-
-/* User SVG */
-
-.message-avatar svg {
-  width: 15px;
-  height: 15px;
-
-  fill: none;
-
-  stroke: currentColor;
-
-  stroke-width: 1.5;
-
-  stroke-linecap: round;
-
-  stroke-linejoin: round;
-}
-
-/* AI avatar */
-
-.ai-icon {
-  font-family: "DM Mono", monospace;
-
-  font-size: 8px;
-
-  letter-spacing: 0.5px;
-
-  color: #999;
-}
-
-/* =========================================================
-   MESSAGE BODY
-========================================================= */
-
-.message-body {
-  max-width: min(75%, 620px);
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 6px;
-}
-
-/* =========================================================
-   MESSAGE CONTENT
-========================================================= */
-
-.message-content {
-  padding: 12px 15px;
-
-  border: 1px solid #252525;
-
-  background: #0d0d0d;
-
-  color: #aaa;
-
-  font-size: 13px;
-
-  line-height: 1.65;
-}
-
-/* User message */
-
-.message-row.user .message-content {
-  background: #151515;
-
-  border-color: #303030;
-
-  color: #d4d4d4;
-}
-
-/* =========================================================
-   MESSAGE META / TIME
-========================================================= */
-
-.message-meta {
-  font-family: "DM Mono", monospace;
-
-  font-size: 7px;
-
-  letter-spacing: 1px;
-
-  color: #3f3f3f;
-
-  text-transform: uppercase;
-}
-
-/* User timestamp on right */
-
-.message-row.user .message-meta {
-  text-align: right;
-}
-
-/* =========================================================
-   MESSAGE ANIMATION
-========================================================= */
-
-@keyframes messageIn {
-  from {
-    opacity: 0;
-
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-
-    transform: translateY(0);
-  }
-}
-
-/* =========================================================
-   MOBILE
+   CHAT RESPONSIVE
 ========================================================= */
 
 @media (max-width: 800px) {
   .message-body {
     max-width: 82%;
   }
+
+  .messages {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
 }
 
 @media (max-width: 500px) {
-  .message-row {
+  .message {
     gap: 8px;
   }
 
   .message-avatar {
     width: 25px;
     height: 25px;
+    min-width: 25px;
   }
 
   .message-content {
-    padding: 10px 12px;
     font-size: 12px;
   }
-}
 
-/* =========================================================
-   TYPING INDICATOR
-========================================================= */
-
-.typing-content {
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  min-height: 42px;
-
-  padding: 10px 14px;
-
-  border: 1px solid #252525;
-
-  background: #0d0d0d;
-}
-
-/* =========================================================
-   DOTS
-========================================================= */
-
-.typing-dots {
-  display: flex;
-
-  align-items: center;
-
-  gap: 4px;
-}
-
-/* Individual dot */
-
-.typing-dots span {
-  width: 4px;
-
-  height: 4px;
-
-  display: block;
-
-  border-radius: 50%;
-
-  background: #777;
-
-  animation: typingDot 1.2s infinite ease-in-out;
-}
-
-/* Delay each dot */
-
-.typing-dots span:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.typing-dots span:nth-child(2) {
-  animation-delay: 0.15s;
-}
-
-.typing-dots span:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-/* =========================================================
-   DOT ANIMATION
-========================================================= */
-
-@keyframes typingDot {
-  0%,
-  60%,
-  100% {
-    opacity: 0.25;
-
-    transform: translateY(0);
+  .message.user .message-content {
+    padding: 10px 12px;
   }
 
-  30% {
-    opacity: 1;
-
-    transform: translateY(-3px);
+  .messages {
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 170px;
   }
 }
 
 /* =========================================================
-   TYPING TEXT
+   FINAL CHAT WIDTH AND ALIGNMENT
 ========================================================= */
 
-.typing-text {
-  font-family: "DM Mono", monospace;
+.messages {
+  width: min(760px, calc(100% - 40px));
+  max-width: 760px;
+  margin: 30px auto 120px;
+  padding-left: 0;
+  padding-right: 0;
+  box-sizing: border-box;
+}
 
-  font-size: 8px;
+.message-row {
+  width: 100%;
+  box-sizing: border-box;
+}
 
-  letter-spacing: 0.5px;
+.message-body {
+  max-width: 620px;
+  min-width: 0;
+}
 
-  color: #4a4a4a;
+/* Keep user messages on the right side of the centered chat column */
+.message-row.user {
+  justify-content: flex-end;
+}
+
+/* Keep bot messages on the left side of the centered chat column */
+.message-row.bot {
+  justify-content: flex-start;
+}
+
+/* User content stays compact */
+.message-row.user .message-body {
+  max-width: 420px;
+}
+
+/* Bot response gets more room for long RAG answers */
+.message-row.bot .message-body {
+  max-width: 620px;
+}
+
+/* Keep timestamps aligned with their respective messages */
+.message-row.user .message-meta {
+  text-align: right;
+}
+
+.message-row.bot .message-meta {
+  text-align: left;
+}
+
+/* Mobile */
+@media (max-width: 800px) {
+  .messages {
+    width: calc(100% - 30px);
+    max-width: 760px;
+  }
+
+  .message-row.user .message-body,
+  .message-row.bot .message-body {
+    max-width: 82%;
+  }
 }

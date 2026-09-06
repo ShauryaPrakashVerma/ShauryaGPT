@@ -123,40 +123,44 @@ INSTRUCTIONS:
 
 
 
-
-
-def ask_llm( user_prompt, system_prompt = system_prompt):
-
-
-    user_prompt = user_prompt
+def ask_llm(user_prompt, system_prompt=system_prompt):
 
     messages = [
         {
-            "role" : "system",
-            "content" : system_prompt
+            "role": "system",
+            "content": system_prompt
         },
         {
-            "role" : "user",
-            "content" : user_prompt
+            "role": "user",
+            "content": user_prompt
         }
     ]
 
-    response = client.chat.completions.create(model=model, messages=messages, stream=True)
-    # answer = response.choices[0].message.content
-    
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        stream=True
+    )
+
     answer = ""
+
     for chunk in response:
+
         content = chunk.choices[0].delta.content
+
         if content:
-            answer = answer + content
-            print(content, end="", flush=True)
-        
+
+            # Build complete response
+            answer += content
+
+            # Stream chunk to Flask
+            yield content
+
+
     messages.append({
-        "role" : "assistant",
-        "content" : answer
+        "role": "assistant",
+        "content": answer
     })
-    
-    return answer
     
     
 def doc_parser():
