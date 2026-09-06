@@ -6,7 +6,10 @@
 
     <title>Portfolio Bot</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,7 +49,7 @@
 
           <div class="conversation-list" id="conversationList">
             <!-- Active conversation -->
-            <button class="conversation active">
+            <button class="conversation active" data-chat-id="new-1">
               <div class="conversation-content">
                 <span class="conversation-title"> New conversation </span>
 
@@ -58,7 +61,7 @@
               <span class="conversation-time"> NOW </span>
             </button>
 
-            <button class="conversation">
+            <button class="conversation" data-chat-id="technical-skills">
               <div class="conversation-content">
                 <span class="conversation-title">
                   What are your core technical...
@@ -72,7 +75,7 @@
               <span class="conversation-time"> NOW </span>
             </button>
 
-            <button class="conversation">
+            <button class="conversation" data-chat-id="challenging-project">
               <div class="conversation-content">
                 <span class="conversation-title">
                   Walk me through a challenging...
@@ -86,7 +89,7 @@
               <span class="conversation-time"> NOW </span>
             </button>
 
-            <button class="conversation">
+            <button class="conversation" data-chat-id="technical-background">
               <div class="conversation-content">
                 <span class="conversation-title"> Technical background </span>
 
@@ -98,7 +101,7 @@
               <span class="conversation-time"> TODAY </span>
             </button>
 
-            <button class="conversation">
+            <button class="conversation" data-chat-id="open-source">
               <div class="conversation-content">
                 <span class="conversation-title"> Open source & projects </span>
 
@@ -110,7 +113,7 @@
               <span class="conversation-time"> YESTERDAY </span>
             </button>
 
-            <button class="conversation">
+            <button class="conversation" data-chat-id="team">
               <div class="conversation-content">
                 <span class="conversation-title"> Team & collaboration </span>
 
@@ -173,8 +176,8 @@
             <div class="hero-line"></div>
 
             <p class="hero-description">
-              Ask me anything about Shaurya's experience, skills, projects, or what
-              they're looking for next.
+              Ask me anything about Shaurya's experience, skills, projects, or
+              what they're looking for next.
             </p>
 
             <!-- Suggested Questions -->
@@ -251,7 +254,7 @@
             <textarea
               id="chatInput"
               class="chat-input"
-              placeholder="Ask about Alex's experience, skills, or projects..."
+              placeholder="Ask about Shaurya's experience, skills, or projects..."
               rows="1"
               aria-label="Chat message"
             ></textarea>

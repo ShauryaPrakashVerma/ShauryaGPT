@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from Resume import ask_llm
+from Backend.Resume import ask_llm
 
 app = Flask(__name__)
 
