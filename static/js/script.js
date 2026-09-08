@@ -745,3 +745,48 @@ if (helpBtn) {
 window.addEventListener("load", () => {
   chatInput.focus();
 });
+
+
+
+
+
+// THEME TOGGLE
+
+const themeToggle = document.getElementById("themeToggle");
+
+function applyTheme(theme) {
+    if (theme === "light") {
+        document.body.setAttribute("data-theme", "light");
+
+        if (themeToggle) {
+            themeToggle.textContent = "☾";
+            themeToggle.setAttribute("aria-label", "Switch to dark theme");
+        }
+    } else {
+        document.body.removeAttribute("data-theme");
+
+        if (themeToggle) {
+            themeToggle.textContent = "☀";
+            themeToggle.setAttribute("aria-label", "Switch to light theme");
+        }
+    }
+}
+
+const savedTheme = localStorage.getItem("portfolio-theme") || "dark";
+
+applyTheme(savedTheme);
+
+if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+        const currentTheme =
+            document.body.getAttribute("data-theme") === "light"
+                ? "light"
+                : "dark";
+
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+        localStorage.setItem("portfolio-theme", newTheme);
+
+        applyTheme(newTheme);
+    });
+}

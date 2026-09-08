@@ -1172,3 +1172,358 @@ body {
     max-width: 82%;
   }
 }
+
+/* --------------------------------------------------------------------------------------------------------------------------------- */
+/* Theme toggle */
+.theme-toggle {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid #333;
+  color: #aaa;
+  cursor: pointer;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  margin-right: 10px;
+}
+
+.theme-toggle:hover {
+  border-color: #777;
+  color: #fff;
+}
+
+/* Light theme */
+body[data-theme="light"] {
+  background: #f5f5f5;
+  color: #111;
+}
+
+/* App */
+body[data-theme="light"] .app {
+  background: #f5f5f5;
+}
+
+/* Theme toggle */
+body[data-theme="light"] .theme-toggle {
+  background: transparent;
+  color: #111;
+  border-color: #bdbdbd;
+}
+
+body[data-theme="light"] .theme-toggle:hover {
+  background: #e9e9e9;
+  border-color: #777;
+  color: #111;
+}
+
+/* Sidebar */
+body[data-theme="light"] .sidebar {
+  background: #eeeeee;
+  border-right-color: #d2d2d2;
+}
+
+body[data-theme="light"] .sidebar-header {
+  border-bottom-color: #d5d5d5;
+}
+
+body[data-theme="light"] .portfolio-info h2 {
+  color: #222;
+}
+
+body[data-theme="light"] .eyebrow {
+  color: #777;
+}
+
+body[data-theme="light"] .new-chat-btn {
+  color: #555;
+  border-color: #bdbdbd;
+}
+
+body[data-theme="light"] .new-chat-btn:hover {
+  background: #e2e2e2;
+  color: #111;
+  border-color: #888;
+}
+
+body[data-theme="light"] .section-label {
+  color: #777;
+}
+
+body[data-theme="light"] .conversation {
+  border-top-color: #dcdcdc;
+  color: #444;
+}
+
+body[data-theme="light"] .conversation:hover {
+  background: #e5e5e5;
+}
+
+body[data-theme="light"] .conversation.active {
+  background: #e0e0e0;
+  border-left-color: #222;
+}
+
+body[data-theme="light"] .conversation-title {
+  color: #444;
+}
+
+body[data-theme="light"] .conversation.active .conversation-title {
+  color: #111;
+}
+
+body[data-theme="light"] .conversation-preview {
+  color: #777;
+}
+
+body[data-theme="light"] .conversation-time {
+  color: #777;
+}
+
+body[data-theme="light"] .sidebar-footer {
+  border-top-color: #d5d5d5;
+}
+
+body[data-theme="light"] .version {
+  color: #777;
+}
+
+body[data-theme="light"] .footer-description {
+  color: #777;
+}
+
+/* Main content */
+body[data-theme="light"] .main-content {
+  background: #f5f5f5;
+}
+
+/* Top bar */
+body[data-theme="light"] .topbar {
+  background: #f5f5f5;
+  border-bottom-color: #d5d5d5;
+}
+
+body[data-theme="light"] .menu-btn span {
+  background: #777;
+}
+
+body[data-theme="light"] .menu-btn:hover span {
+  background: #222;
+}
+
+body[data-theme="light"] .chat-title {
+  color: #444;
+}
+
+body[data-theme="light"] .topbar-brand {
+  color: #888;
+}
+
+/* Chat area */
+body[data-theme="light"] .chat-area {
+  background: #f5f5f5;
+}
+
+/* Light dot grid */
+body[data-theme="light"] .background-grid {
+  opacity: 0.45;
+  background-image: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.16) 1px,
+    transparent 1px
+  );
+}
+
+/* Hero */
+body[data-theme="light"] .hero-eyebrow {
+  color: #777;
+}
+
+body[data-theme="light"] .hero h1 {
+  color: #222;
+}
+
+body[data-theme="light"] .hero h1 span {
+  color: #777;
+}
+
+body[data-theme="light"] .hero-line {
+  background: #aaa;
+}
+
+body[data-theme="light"] .hero-description {
+  color: #666;
+}
+
+/* Suggestions */
+body[data-theme="light"] .suggestion-card {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: #d0d0d0;
+  color: #666;
+}
+
+body[data-theme="light"] .suggestion-card:hover {
+  background: #eaeaea;
+  border-color: #999;
+  color: #222;
+}
+
+body[data-theme="light"] .arrow {
+  color: #888;
+}
+
+body[data-theme="light"] .suggestion-card:hover .arrow {
+  color: #333;
+}
+
+/* Messages */
+body[data-theme="light"] .message.user {
+  color: #111;
+}
+
+body[data-theme="light"] .message.bot {
+  color: #333;
+}
+
+body[data-theme="light"] .message-avatar {
+  background: #f0f0f0;
+  border-color: #c8c8c8;
+  color: #555;
+}
+
+body[data-theme="light"] .message.user .message-avatar {
+  background: #111;
+  border-color: #111;
+  color: #fff;
+}
+
+body[data-theme="light"] .message.user .message-content {
+  background: #111;
+  border-color: #111;
+  color: #fff;
+}
+
+body[data-theme="light"] .message.bot .message-content {
+  background: transparent;
+  border: none;
+  color: #333;
+}
+
+body[data-theme="light"] .message-time {
+  color: #777;
+}
+
+/* Bot markdown */
+body[data-theme="light"] .message.bot h1,
+body[data-theme="light"] .message.bot h2,
+body[data-theme="light"] .message.bot h3 {
+  color: #222;
+}
+
+body[data-theme="light"] .message.bot strong {
+  color: #111;
+}
+
+body[data-theme="light"] .message.bot em {
+  color: #555;
+}
+
+body[data-theme="light"] .message.bot code {
+  background: #e9e9e9;
+  border-color: #d0d0d0;
+  color: #222;
+}
+
+body[data-theme="light"] .message.bot pre {
+  background: #eeeeee;
+  border-color: #d0d0d0;
+}
+
+body[data-theme="light"] .message.bot blockquote {
+  border-left-color: #999;
+  color: #666;
+}
+
+body[data-theme="light"] .message.bot a {
+  color: #333;
+}
+
+body[data-theme="light"] .message.bot hr {
+  border-top-color: #d0d0d0;
+}
+
+/* Streaming */
+body[data-theme="light"] .streaming-content::after {
+  color: #222;
+}
+
+/* Typing indicator */
+body[data-theme="light"] .typing-text {
+  color: #777;
+}
+
+body[data-theme="light"] .typing-dots span {
+  background: #555;
+}
+
+/* Input area */
+body[data-theme="light"] .input-area {
+  background: #f5f5f5;
+  border-top-color: #d5d5d5;
+}
+
+body[data-theme="light"] .input-wrapper {
+  background: #f8f8f8;
+  border-color: #c8c8c8;
+}
+
+body[data-theme="light"] .input-wrapper:focus-within {
+  border-color: #888;
+}
+
+body[data-theme="light"] .chat-input {
+  color: #111;
+}
+
+body[data-theme="light"] .chat-input::placeholder {
+  color: #888;
+}
+
+body[data-theme="light"] .send-btn {
+  border-color: #d0d0d0;
+  color: #666;
+}
+
+body[data-theme="light"] .send-btn:hover {
+  color: #111;
+  background: #e8e8e8;
+  border-color: #999;
+}
+
+body[data-theme="light"] .input-hint {
+  color: #777;
+}
+
+/* Help button */
+body[data-theme="light"] .help-btn {
+  background: #eeeeee;
+  border-color: #bdbdbd;
+  color: #555;
+}
+
+body[data-theme="light"] .help-btn:hover {
+  background: #e0e0e0;
+  color: #111;
+}
+
+/* Scrollbar */
+body[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #c7c7c7;
+}
+
+body[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
