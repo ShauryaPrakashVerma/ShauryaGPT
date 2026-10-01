@@ -6,3 +6,5 @@
 Personal_Information/
 
 __pycache__/
+
+chroma_db/
