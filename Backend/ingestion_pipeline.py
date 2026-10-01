@@ -1,14 +1,15 @@
 from document_extraction import extract_and_chunk
 from embedding import generate_embeddings
-
+from pathlib import Path
 import chromadb
-
 
 # -----------------------------
 # Configuration
 # -----------------------------
 
-DOCUMENT_PATH = "../Personal_Information/MY PROJECTS.docx"
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DOCUMENT_PATH = BASE_DIR / "Personal_Information" / "MY PROJECTS.docx"
 
 CHROMA_PATH = "../chroma_db"
 

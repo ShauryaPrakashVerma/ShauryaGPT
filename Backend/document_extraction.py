@@ -1,5 +1,6 @@
 from docx import Document
 from chunking import chunk_text
+from pathlib import Path
 
 
 def extract_document(file_path):
@@ -13,7 +14,7 @@ def extract_document(file_path):
         list: List of extracted sections.
     """
 
-    document = Document("Personal_Information\\MY PROJECTS.docx")
+    document = Document(file_path)
 
     sections = []
     current_heading = "General"
@@ -62,16 +63,3 @@ def extract_and_chunk(file_path):
             })
 
     return chunked_data
-
-
-# if __name__ == "__main__":
-
-#     file_path = "../Personal_Information/MY PROJECTS.docx"
-
-#     chunks = extract_and_chunk(file_path)
-
-#     for i, chunk in enumerate(chunks):
-
-#         print(f"\n--- Chunk {i + 1} ---")
-#         print("Section:", chunk["metadata"]["section"])
-#         print("Text:", chunk["text"])
