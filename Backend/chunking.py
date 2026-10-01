@@ -34,18 +34,3 @@ def chunk_text(text: str, chunk_size: int = 500, chunk_overlap: int = 50) -> Lis
         start += chunk_size - chunk_overlap
 
     return chunks
-
-
-if __name__ == "__main__":
-
-    text = """
-    I am a Computer Science student specializing in AI and Machine Learning.
-    I have worked on several projects involving Python, Flask, machine learning,
-    RAG systems and intelligent traffic management.
-    """
-
-    chunks = chunk_text(text)
-
-    for i, chunk in enumerate(chunks):
-        print(f"\n--- Chunk {i} ---")
-        print(chunk)
