@@ -13,10 +13,7 @@ client = Groq(
 MODEL_NAME = "openai/gpt-oss-120b"
 
 
-def generate_answer(
-    query,
-    context
-):
+def generate_answer(query, context):
     """
     Generate an answer using retrieved context.
     """
@@ -70,7 +67,13 @@ Answer the user's question using the context above.
             }
         ],
 
-        temperature=0.2
+        temperature=0.2,
+        stream=True
     )
 
-    return response.choices[0].message.content
+    for chunk in response:
+
+        content = chunk.choices[0].delta.content
+
+        if content:
+            yield content
