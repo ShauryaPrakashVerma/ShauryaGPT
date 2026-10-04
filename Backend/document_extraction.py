@@ -1,5 +1,5 @@
 from docx import Document
-from chunking import chunk_text
+from Backend.chunking import chunk_text
 from pathlib import Path
 
 

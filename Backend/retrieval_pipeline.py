@@ -1,5 +1,5 @@
-from embedding import generate_embeddings
-from retrieval import search_similar
+from Backend.embedding import generate_embeddings
+from Backend.retrieval import search_similar
 
 
 def retrieve(

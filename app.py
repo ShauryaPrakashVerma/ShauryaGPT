@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
-from Backend.Resume import ask_llm
+# from Backend.Resume import ask_llm
+from Backend.rag_pipeline import generate_rag_response
 from flask import request, Response, stream_with_context
 
 
@@ -27,7 +28,7 @@ def chat():
     @stream_with_context
     def generate():
         try:
-            for chunk in ask_llm(user_message):
+            for chunk in generate_rag_response(user_message):
                 yield chunk
 
         except Exception as e:

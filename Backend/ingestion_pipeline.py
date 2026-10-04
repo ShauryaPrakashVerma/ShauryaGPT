@@ -1,5 +1,5 @@
-from document_extraction import extract_and_chunk
-from embedding import generate_embeddings
+from Backend.document_extraction import extract_and_chunk
+from Backend.embedding import generate_embeddings
 from pathlib import Path
 import chromadb
 

@@ -1,5 +1,5 @@
-from retrieval_pipeline import retrieve
-from llm import generate_answer_stream
+from Backend.retrieval_pipeline import retrieve
+from Backend.llm import generate_answer
 
 
 def build_context(retrieved_chunks):
@@ -46,7 +46,7 @@ def generate_rag_response(query, top_k=5):
         retrieved_chunks
     )
 
-    for chunk in generate_answer_stream(
+    for chunk in generate_answer(
         query,
         context
     ):
